@@ -1,13 +1,13 @@
 # 📘 PyOSPA2 — OSPA(2) Metric 
 
-**OSPA2** is a high-performance C++/Python library implementing the
+**OSPA2** is a Python library with C++ backend implementing the
 **OSPA(2) metric for multi-target tracking**, based on:
 
 * **LAPJV (Jonker–Volgenant Hungarian Algorithm)**
   from: [https://github.com/src-d/lapjv/tree/master](https://github.com/src-d/lapjv/tree/master)
   (adapted and compiled with **AVX2** support)
-* **Eigen 3.4.0** for vectorized linear algebra
-* **Pybind11** for seamless Python bindings
+* **Eigen 3.4.0** 
+* **Pybind11** 
 
 It computes the OSPA(2) metric over time using sliding windows, directly from Pandas DataFrames.
 
@@ -30,7 +30,6 @@ cd PyOSPA2
 pip install .
 ```
 
-This builds the C++ extension including LAPJV and Eigen.
 
 ---
 
@@ -131,7 +130,7 @@ This example shows:
 
 The resulting OSPA² components are plotted below:
 
-![OSPA2 Example](ospa2_example.png)
+![OSPA2 Example](doc/ospa2_example.png)
 
 ---
 
