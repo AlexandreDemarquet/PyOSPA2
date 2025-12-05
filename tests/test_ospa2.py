@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from ospa2 import OSPA2
+from PyOSPA2 import OSPA2
 
 def test_ospa2_basic():
     gt = pd.DataFrame({

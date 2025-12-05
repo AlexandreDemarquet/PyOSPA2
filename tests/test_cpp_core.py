@@ -1,4 +1,4 @@
-from ospa2._ospa2 import compute_distance_matrix, ospa2_from_matrix
+from PyOSPA2._ospa2 import compute_distance_matrix, ospa2_from_matrix
 import numpy as np
 
 def test_compute_distance_matrix():
