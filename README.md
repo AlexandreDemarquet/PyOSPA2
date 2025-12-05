@@ -167,3 +167,9 @@ Planned improvements:
 
 Contributions are welcome! Feel free to open issues, submit pull requests, or suggest performance improvements.
 
+## Testing
+
+
+```bash
+pytest tests/test_ospa2.py -v
+```
