@@ -1,8 +1,4 @@
-Voici le **README complet en Markdown**, prêt à copier-coller dans GitHub, incluant la **citation officielle OSPA(2)**.
-
----
-
-# 📘 OSPA2 — Fast OSPA(2) Metric with AVX2-Optimized LAPJV Solver
+# 📘 PyOSPA2 — OSPA(2) Metric 
 
 **OSPA2** is a high-performance C++/Python library implementing the
 **OSPA(2) metric for multi-target tracking**, based on:
@@ -17,24 +13,15 @@ It computes the OSPA(2) metric over time using sliding windows, directly from Pa
 
 ---
 
-## ✨ Features
 
-* ⚡ **Very fast** assignment via AVX2-optimized LAPJV
-* 🧮 Full OSPA(2) support: parameters `c`, `p`, `q`, time window length
-* 🧩 Accepts Pandas DataFrames (with id + feature columns)
-* 🔗 Easy Python API
-* 🧪 Tested with `pytest`
-* 📦 Simple installation: `pip install .`
-
----
 
 ## 📦 Installation
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourname/ospa2.git
-cd ospa2
+git clone https://github.com/AlexandreDemarquet/PyOSPA2
+cd PyOSPA2
 ```
 
 ### 2. Install the package
@@ -47,32 +34,9 @@ This builds the C++ extension including LAPJV and Eigen.
 
 ---
 
-## 📁 Project Structure
-
-```
-ospa2/
-│
-├── cpp/
-│   ├── lapjv/               # AVX2 LAPJV implementation (included)
-│   ├── ospa2.cpp            # OSPA2 core: distance matrix + OSPA2 metric
-│   ├── bindings.cpp         # pybind11 module
-│   └── CMakeLists.txt       # build rules
-│
-├── python/
-│   └── ospa2.py             # high-level Python API
-│
-├── tests/
-│   └── test_cpp_core.py     # unit tests (pytest)
-│
-└── setup.py                 # setuptools build config
-```
-
----
 
 
-
-
-## 📊 Usage OSPA² Example (Deterministic Values)
+## 📊 Usage OSPA² Example 
 
 ```python
 import numpy as np
@@ -181,19 +145,13 @@ pytest -q
 
 ---
 
-## 📚 References & Citation
 
-### **Original OSPA(2) Metric**
+## **Reference**
 
-> Schuhmacher, D., Vo, B.-T., & Vo, B.-N. (2008).
-> **A Statistic for Performance Evaluation of Multi-Object Filters**.
-> *IEEE Transactions on Signal Processing*, 56(8), 3447–3457.
-> [https://doi.org/10.1109/TSP.2008.924688](https://doi.org/10.1109/TSP.2008.924688)
 
-### **Original OSPA (base metric)**
+### **OSPA(2) Metric**
 
-> R. Mahler, “Multitarget Bayes filtering and the PHD filter,”
-> in *AeroSense'03*, SPIE, 2003.
+> M. Beard, B. T. Vo and B.-N. Vo, *"OSPA(2): Using the OSPA metric to evaluate multi-target tracking performance,"* 2017 International Conference on Control, Automation and Information Sciences (ICCAIS), Chiang Mai, Thailand, 2017, pp. 86-91, [doi:10.1109/ICCAIS.2017.8217598](https://doi.org/10.1109/ICCAIS.2017.8217598).
 
 ### **LAPJV Solver**
 
@@ -205,7 +163,7 @@ pytest -q
 
 ## 📝 License
 
-MIT License (or your choice).
+MIT License.
 
 ---
 
