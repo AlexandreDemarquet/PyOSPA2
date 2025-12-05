@@ -161,7 +161,7 @@ MIT License.
 
 Planned improvements:
 
-- Adapt to work with polar coordinates and/or pure NumPy.  
+- Adapt to work with polars and/or pure NumPy.  
 - Support different weighting functions (currently only uniform weights are implemented).  
 - Add more comprehensive tests.
 
