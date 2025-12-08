@@ -1,7 +1,6 @@
 LICENSE
 README.md
 pyproject.toml
-setup.cfg
 setup.py
 PyOSPA2/__init__.py
 PyOSPA2/wrapper.py
@@ -13,6 +12,4 @@ PyOSPA2.egg-info/requires.txt
 PyOSPA2.egg-info/top_level.txt
 src/bindings.cpp
 src/ospa2.cpp
-tests/test_cpp_core.py
-tests/test_import.py
 tests/test_ospa2.py
