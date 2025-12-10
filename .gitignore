@@ -1,3 +1,4 @@
 .pytest_cache/
 build/
 PyOSPA2.egg-info
+.vscode
