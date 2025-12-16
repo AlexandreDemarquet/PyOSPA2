@@ -4,7 +4,9 @@ PyOSPA2.egg-info
 .vscode
 
 # Python cache
-__pycache__/
+tests/__pycache__/
+PyOSPA2/__pycache__/
+
 *.pyc
 *.pyo
 *.pyd
