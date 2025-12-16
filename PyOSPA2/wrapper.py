@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 try:
-    from ._ospa2 import compute_distance_matrix, ospa2_from_matrix
+    from ._ospa2 import compute_distance_matrix, ospa2_from_matrix, average_ospa2_at_time
 except ImportError as e:
     raise ImportError("The _ospa2 extension module is missing. Build the package first.") from e
 
@@ -148,3 +148,41 @@ class OSPA2:
             o2_loc.append(loc)
             o2_card.append(card)
         return ts_list, o2, o2_loc, o2_card
+
+    def average_ospa2_over_time(self, l_gt_df: list[pd.DataFrame], l_trk_df: list[pd.DataFrame]) -> tuple[list[int], list[float], list[float], list[float]]:
+        """Compute average OSPA2 over time for a list of ground-truth and track DataFrames.
+        
+        Uses parallel C++ computation for averaging over pairs at each timestamp.
+        
+        Args:
+            l_gt_df: List of ground-truth DataFrames.
+            l_trk_df: List of track DataFrames.
+        
+        Returns:
+            tuple(list[int], list[float], list[float], list[float]):
+                (ts_list, avg_o2, avg_o2_loc, avg_o2_card)
+        """
+        assert len(l_gt_df) == len(l_trk_df), "Lists of DataFrames must have the same length."
+        assert len(l_gt_df) > 0, "Input lists must not be empty."
+        # Get timestamps from first GT DataFrame
+        ts_list = sorted(l_gt_df[0][self.time_col].unique())
+        
+        avg_o2 = []
+        avg_o2_loc = []
+        avg_o2_card = []
+        
+        for t in ts_list:
+            # Prepare pairs of trajectories for this timestamp
+            pairs = []
+            for gt_df, trk_df in zip(l_gt_df, l_trk_df):
+                gt_trajs = self.df_to_trajs(gt_df, t)
+                trk_trajs = self.df_to_trajs(trk_df, t)
+                pairs.append((gt_trajs, trk_trajs))
+            
+            # Call C++ function for parallel averaging
+            ospa2, loc, card = average_ospa2_at_time(pairs, self.c, self.p, self.q)
+            avg_o2.append(ospa2)
+            avg_o2_loc.append(loc)
+            avg_o2_card.append(card)
+        
+        return ts_list, avg_o2, avg_o2_loc, avg_o2_card

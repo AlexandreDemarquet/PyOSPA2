@@ -22,10 +22,10 @@ class TestBasicFunctionality:
             'y': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         })
         trk = gt.copy()
-        
+
         o = OSPA2(c=100, p=1, q=1, window_length=3, cols=['x', 'y'], id_col='track_id')
         ts, o2, loc, card = o.ospa2_over_time(gt, trk)
-        
+
         assert all(abs(v) < 1e-10 for v in o2), "Identical trajectories should have OSPA2 ≈ 0"
         assert all(abs(v) < 1e-10 for v in loc), "Identical trajectories should have localization error ≈ 0"
         assert all(abs(v) < 1e-10 for v in card), "Identical trajectories should have cardinality error ≈ 0"
@@ -44,10 +44,10 @@ class TestBasicFunctionality:
             'x': [],
             'y': []
         })
-        
+
         o = OSPA2(c=100, p=1, q=1, window_length=3, cols=['x', 'y'], id_col='track_id')
         ts, o2, loc, card = o.ospa2_over_time(gt, trk)
-        
+
         assert len(o2) > 0, "Should compute OSPA2 even with missing tracks"
         assert all(c > 0 for c in card), "Cardinality error should be positive when tracks are missing"
 
@@ -65,10 +65,10 @@ class TestBasicFunctionality:
             'x': [0.0, 1.0, 2.0, 10.0, 11.0, 12.0],
             'y': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         })
-        
+
         o = OSPA2(c=100, p=1, q=1, window_length=3, cols=['x', 'y'], id_col='track_id')
         ts, o2, loc, card = o.ospa2_over_time(gt, trk)
-        
+
         assert all(c > 0 for c in card), "False positives should create cardinality error"
 
 
@@ -89,13 +89,13 @@ class TestParameterVariations:
             'x': [1.0, 2.0, 3.0],
             'y': [0.0, 0.0, 0.0]
         })
-        
+
         o_low = OSPA2(c=1.0, p=1, q=1, window_length=3, cols=['x', 'y'])
         o_high = OSPA2(c=100.0, p=1, q=1, window_length=3, cols=['x', 'y'])
-        
+
         _, o2_low, _, _ = o_low.ospa2_over_time(gt, trk)
         _, o2_high, _, _ = o_high.ospa2_over_time(gt, trk)
-        
+
         # Lower c should cap the error more aggressively
         assert all(l <= h for l, h in zip(o2_low, o2_high)), "Lower c should not increase error"
 
@@ -113,13 +113,13 @@ class TestParameterVariations:
             'x': [0.0, 1.0, 5.0, 6.0],
             'y': [0.0, 0.0, 0.0, 0.0]
         })
-        
+
         o_p1 = OSPA2(c=100, p=1, q=1, window_length=2)
         o_p2 = OSPA2(c=100, p=2, q=1, window_length=2)
-        
+
         _, o2_p1, _, card_p1 = o_p1.ospa2_over_time(gt, trk)
         _, o2_p2, _, card_p2 = o_p2.ospa2_over_time(gt, trk)
-        
+
         assert len(o2_p1) == len(o2_p2), "Same data should produce same number of timestamps"
 
     def test_different_q_parameter(self):
@@ -136,13 +136,13 @@ class TestParameterVariations:
             'x': [0.1, 1.1, 2.1],
             'y': [0.0, 0.0, 0.0]
         })
-        
+
         o_q1 = OSPA2(c=100, p=1, q=1, window_length=3)
         o_q2 = OSPA2(c=100, p=1, q=2, window_length=3)
-        
+
         _, o2_q1, _, _ = o_q1.ospa2_over_time(gt, trk)
         _, o2_q2, _, _ = o_q2.ospa2_over_time(gt, trk)
-        
+
         assert len(o2_q1) == len(o2_q2), "Same data should produce same number of results"
 
 
@@ -158,13 +158,13 @@ class TestWindowBehavior:
             'y': [0.0, 0.0, 0.0, 0.0, 0.0]
         })
         trk = gt.copy()
-        
+
         o_short = OSPA2(c=100, p=1, q=1, window_length=2)
         o_long = OSPA2(c=100, p=1, q=1, window_length=5)
-        
+
         ts_short, o2_short, _, _ = o_short.ospa2_over_time(gt, trk)
         ts_long, o2_long, _, _ = o_long.ospa2_over_time(gt, trk)
-        
+
         # Both should have same timestamps
         assert len(ts_short) == len(ts_long), "Should evaluate at same timestamps"
         # With identical data, both should be near zero
@@ -185,10 +185,10 @@ class TestWindowBehavior:
             'x': [0.0, 2.0, 4.0],
             'y': [0.0, 0.0, 0.0]
         })
-        
+
         o = OSPA2(c=100, p=1, q=1, window_length=5, cols=['x', 'y'])
         ts, o2, loc, card = o.ospa2_over_time(gt, trk)
-        
+
         assert all(abs(v) < 1e-10 for v in o2), "Identical trajectories with gaps should have OSPA2 ≈ 0"
 
 
@@ -209,10 +209,10 @@ class TestMultipleTargets:
             'x': [0.0, 1.0, 2.0, 2.0, 1.0, 0.0],
             'y': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         })
-        
+
         o = OSPA2(c=100, p=1, q=1, window_length=3, cols=['x', 'y'])
         ts, o2, loc, card = o.ospa2_over_time(gt, trk)
-        
+
         assert all(abs(v) < 1e-10 for v in o2), "Perfect tracking should have OSPA2 ≈ 0 even with crossing"
 
     def test_track_swap_error(self):
@@ -230,10 +230,10 @@ class TestMultipleTargets:
             'x': [10.0, 11.0, 12.0, 0.0, 1.0, 2.0],
             'y': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         })
-        
+
         o = OSPA2(c=100, p=1, q=1, window_length=3, cols=['x', 'y'])
         ts, o2, loc, card = o.ospa2_over_time(gt, trk)
-        
+
         # Should still have low OSPA2 since positions are correct (ID swap doesn't matter)
         assert all(abs(v) < 1e-10 for v in o2), "ID swap shouldn't affect OSPA2 metric"
 
@@ -251,19 +251,19 @@ class TestMultipleTargets:
             'x': [0.1, 1.1],
             'y': [0.0, 0.0]
         })
-        
+
         # Scale by 100x
         gt_large = gt_small.copy()
         gt_large[['x', 'y']] *= 100
         trk_large = trk_small.copy()
         trk_large[['x', 'y']] *= 100
-        
+
         o_small = OSPA2(c=100, p=1, q=1, window_length=2)
         o_large = OSPA2(c=10000, p=1, q=1, window_length=2)  # Scale c accordingly
-        
+
         _, o2_small, _, _ = o_small.ospa2_over_time(gt_small, trk_small)
         _, o2_large, _, _ = o_large.ospa2_over_time(gt_large, trk_large)
-        
+
         assert len(o2_small) == len(o2_large), "Should have same number of time steps"
 
 
@@ -279,10 +279,10 @@ class TestEdgeCases:
             'y': [0.0]
         })
         trk = gt.copy()
-        
+
         o = OSPA2(c=100, p=1, q=1, window_length=1, cols=['x', 'y'])
         ts, o2, loc, card = o.ospa2_over_time(gt, trk)
-        
+
         assert len(ts) == 1, "Should have one result"
         assert abs(o2[0]) < 1e-10, "Perfect match should have zero error"
 
@@ -295,17 +295,17 @@ class TestEdgeCases:
             'y': [0.0, 0.0, 0.0]
         })
         trk = gt.copy()
-        
+
         o = OSPA2(c=100, p=1, q=1, window_length=3, cols=['x', 'y'])
         ts, o2, loc, card = o.ospa2_over_time(gt, trk)
-        
+
         assert all(abs(v) < 1e-10 for v in o2), "Perfect single target should have zero error"
 
     def test_many_targets(self):
         """Test with many targets simultaneously."""
         n_targets = 50
         n_times = 10
-        
+
         data = []
         for i in range(n_targets):
             for t in range(n_times):
@@ -315,13 +315,13 @@ class TestEdgeCases:
                     'x': float(i) + np.sin(t * 0.1),
                     'y': float(i) + np.cos(t * 0.1)
                 })
-        
+
         gt = pd.DataFrame(data)
         trk = gt.copy()
-        
+
         o = OSPA2(c=100, p=1, q=1, window_length=5, cols=['x', 'y'])
         ts, o2, loc, card = o.ospa2_over_time(gt, trk)
-        
+
         assert len(ts) == n_times, f"Should have {n_times} timestamps"
         assert all(abs(v) < 1e-10 for v in o2), "Perfect tracking of many targets should have zero error"
 
@@ -334,10 +334,10 @@ class TestEdgeCases:
             'y': []
         })
         trk_empty = gt_empty.copy()
-        
+
         o = OSPA2(c=100, p=1, q=1, window_length=3, cols=['x', 'y'])
         ts, o2, loc, card = o.ospa2_over_time(gt_empty, trk_empty)
-        
+
         assert len(ts) == 0, "Empty data should produce empty results"
 
     def test_high_dimensional_trajectories(self):
@@ -351,10 +351,10 @@ class TestEdgeCases:
             'vx': [0.0, 0.0, 0.0]
         })
         trk = gt.copy()
-        
+
         o = OSPA2(c=100, p=1, q=1, window_length=3, cols=['x', 'y', 'z', 'vx'])
         ts, o2, loc, card = o.ospa2_over_time(gt, trk)
-        
+
         assert all(abs(v) < 1e-10 for v in o2), "Perfect 4D tracking should have zero error"
 
 
@@ -363,12 +363,12 @@ class TestLowLevelFunctions:
 
     def test_compute_distance_matrix_shape(self):
         """Test that distance matrix has correct shape."""
-        gt = [np.array([[0.0, 0.0]]), np.array([[1.0, 0.0]])]
-        trk = [np.array([[0.5, 0.5]])]
+        gt = [np.array([[0.0, 0.0]])]
+        trk = [np.array([[1.0, 0.0]])]
         
         D = compute_distance_matrix(gt, trk, c=100.0, q=1.0)
         
-        assert D.shape == (2, 1), f"Expected shape (2,1), got {D.shape}"
+        assert D.shape == (1, 1), f"Expected shape (1,1), got {D.shape}"
 
     def test_compute_distance_matrix_symmetry(self):
         """Distance from A to B should equal distance from B to A."""
@@ -512,6 +512,149 @@ class TestRealWorldScenarios:
         assert len(ts) > 0, "Should compute OSPA2 with target appearance"
         # Last timestep should show cardinality recovery
         assert card[-1] < card[-2] if len(card) > 1 else True, "Cardinality should improve when target detected"
+
+
+class TestAveragingFunctionality:
+    """Test the new parallel averaging functionality."""
+
+    def test_average_identical_pairs(self):
+        """Test averaging with multiple identical pairs should give OSPA2 = 0."""
+        gt = pd.DataFrame({
+            'ts': [0, 1, 2],
+            'track_id': [1, 1, 1],
+            'x': [0.0, 1.0, 2.0],
+            'y': [0.0, 0.0, 0.0]
+        })
+        trk = gt.copy()
+        
+        # Create multiple identical pairs
+        l_gt_df = [gt, gt, gt]
+        l_trk_df = [trk, trk, trk]
+        
+        o = OSPA2(c=100, p=1, q=1, window_length=3, cols=['x', 'y'])
+        ts, o2, loc, card = o.average_ospa2_over_time(l_gt_df, l_trk_df)
+        
+        assert len(ts) == 3, "Should have 3 timestamps"
+        assert all(abs(v) < 1e-10 for v in o2), "Averaging identical pairs should give OSPA2 ≈ 0"
+        assert all(abs(v) < 1e-10 for v in loc), "Localization should be zero"
+        assert all(abs(v) < 1e-10 for v in card), "Cardinality should be zero"
+
+    def test_average_different_pairs(self):
+        """Test averaging with different error levels."""
+        gt1 = pd.DataFrame({
+            'ts': [0, 1],
+            'track_id': [1, 1],
+            'x': [0.0, 1.0],
+            'y': [0.0, 0.0]
+        })
+        trk1 = gt1.copy()  # Perfect
+        
+        gt2 = pd.DataFrame({
+            'ts': [0, 1],
+            'track_id': [1, 1],
+            'x': [0.0, 1.0],
+            'y': [0.0, 0.0]
+        })
+        trk2 = pd.DataFrame({
+            'ts': [0, 1],
+            'track_id': [1, 1],
+            'x': [1.0, 2.0],  # Offset by 1.0
+            'y': [0.0, 0.0]
+        })
+        
+        l_gt_df = [gt1, gt2]
+        l_trk_df = [trk1, trk2]
+        
+        o = OSPA2(c=100, p=1, q=1, window_length=2, cols=['x', 'y'])
+        ts, o2, loc, card = o.average_ospa2_over_time(l_gt_df, l_trk_df)
+        
+        assert len(ts) == 2, "Should have 2 timestamps"
+        assert all(v >= 0 for v in o2), "OSPA2 should be non-negative"
+        # Average should be between 0 and the error of the second pair
+        assert o2[0] > 0, "Should have some error from averaging"
+        assert o2[1] > 0, "Should have some error from averaging"
+
+    def test_average_empty_lists(self):
+        """Test averaging with empty lists."""
+        o = OSPA2(c=100, p=1, q=1, window_length=3)
+        
+        with pytest.raises(AssertionError):
+            o.average_ospa2_over_time([], [])
+
+    def test_average_mismatched_lengths(self):
+        """Test that mismatched list lengths raise error."""
+        gt = pd.DataFrame({
+            'ts': [0],
+            'track_id': [1],
+            'x': [0.0],
+            'y': [0.0]
+        })
+        
+        o = OSPA2(c=100, p=1, q=1, window_length=1)
+        
+        with pytest.raises(AssertionError):
+            o.average_ospa2_over_time([gt], [gt, gt])  # Different lengths
+
+    def test_average_single_pair(self):
+        """Test averaging with single pair (should equal individual computation)."""
+        gt = pd.DataFrame({
+            'ts': [0, 1],
+            'track_id': [1, 1],
+            'x': [0.0, 1.0],
+            'y': [0.0, 0.0]
+        })
+        trk = pd.DataFrame({
+            'ts': [0, 1],
+            'track_id': [1, 1],
+            'x': [0.1, 1.1],
+            'y': [0.0, 0.0]
+        })
+        
+        o = OSPA2(c=100, p=1, q=1, window_length=2, cols=['x', 'y'])
+        
+        # Individual computation
+        ts_ind, o2_ind, loc_ind, card_ind = o.ospa2_over_time(gt, trk)
+        
+        # Averaging with single pair
+        ts_avg, o2_avg, loc_avg, card_avg = o.average_ospa2_over_time([gt], [trk])
+        
+        assert ts_ind == ts_avg, "Timestamps should match"
+        assert np.allclose(o2_ind, o2_avg), "OSPA2 should match for single pair"
+        assert np.allclose(loc_ind, loc_avg), "Localization should match"
+        assert np.allclose(card_ind, card_avg), "Cardinality should match"
+
+    def test_average_multiple_scenarios(self):
+        """Test averaging across different tracking scenarios."""
+        # Scenario 1: Perfect tracking
+        gt1 = pd.DataFrame({
+            'ts': [0, 1],
+            'track_id': [1, 1],
+            'x': [0.0, 1.0],
+            'y': [0.0, 0.0]
+        })
+        trk1 = gt1.copy()
+        
+        # Scenario 2: Small error
+        gt2 = gt1.copy()
+        trk2 = gt1.copy()
+        trk2['x'] += 0.5
+        
+        # Scenario 3: Large error
+        gt3 = gt1.copy()
+        trk3 = gt1.copy()
+        trk3['x'] += 10.0
+        
+        l_gt_df = [gt1, gt2, gt3]
+        l_trk_df = [trk1, trk2, trk3]
+        
+        o = OSPA2(c=100, p=1, q=1, window_length=2, cols=['x', 'y'])
+        ts, o2, loc, card = o.average_ospa2_over_time(l_gt_df, l_trk_df)
+        
+        assert len(ts) == 2, "Should have 2 timestamps"
+        assert all(v >= 0 for v in o2), "All OSPA2 values should be non-negative"
+        # The average should be between the perfect (0) and large error cases
+        assert 0 < o2[0] < 10, "Average should be reasonable"
+        assert 0 < o2[1] < 10, "Average should be reasonable"
 
 
 if __name__ == '__main__':

@@ -79,4 +79,12 @@ PYBIND11_MODULE(_ospa2, m) {
             ospa2_from_matrix(D, c=100.0, p=1.0) -> (ospa2, loc, card)
             D: Eigen::MatrixXd (distance matrix)
           )pbdoc");
+
+    m.def("average_ospa2_at_time", &average_ospa2_at_time_cpp,
+          py::arg("pairs"), py::arg("c")=100.0, py::arg("p")=1.0, py::arg("q")=1.0,
+          R"pbdoc(
+            average_ospa2_at_time(pairs, c=100.0, p=1.0, q=1.0) -> (avg_ospa2, avg_loc, avg_card)
+            pairs: list of pairs (gt_trajs, trk_trajs) where each is list of Eigen::MatrixXd
+            Averages OSPA2 over multiple pairs in parallel using OpenMP
+          )pbdoc");
 }

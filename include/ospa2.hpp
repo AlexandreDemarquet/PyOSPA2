@@ -17,3 +17,7 @@ Eigen::MatrixXd compute_distance_matrix_bind(
     const std::vector<Eigen::MatrixXd>& gt,
     const std::vector<Eigen::MatrixXd>& trk,
     double c, double q);
+
+std::tuple<double, double, double> average_ospa2_at_time_cpp(
+    const std::vector<std::pair<std::vector<Eigen::MatrixXd>, std::vector<Eigen::MatrixXd>>>& pairs,
+    double c, double p, double q);

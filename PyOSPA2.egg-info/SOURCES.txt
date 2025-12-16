@@ -13,3 +13,4 @@ PyOSPA2.egg-info/top_level.txt
 src/bindings.cpp
 src/ospa2.cpp
 tests/test_ospa2.py
+tests/test_ospa2_comprehensive.py

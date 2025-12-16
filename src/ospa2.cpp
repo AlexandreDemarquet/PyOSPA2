@@ -76,3 +76,57 @@ std::tuple<double,double,double> ospa2_from_matrix_bind(
 
     return {ospa2, loc, card};
 }
+
+std::tuple<double, double, double> average_ospa2_at_time_cpp(
+    const std::vector<std::pair<std::vector<Eigen::MatrixXd>, std::vector<Eigen::MatrixXd>>>& pairs,
+    double c, double p, double q)
+{
+    size_t num_pairs = pairs.size();
+    if (num_pairs == 0) {
+        return {0.0, 0.0, 0.0};
+    }
+
+    // Accumulators for averaging
+    double total_ospa2 = 0.0;
+    double total_loc = 0.0;
+    double total_card = 0.0;
+
+    // Parallel loop over pairs
+    #pragma omp parallel for reduction(+:total_ospa2,total_loc,total_card) if(num_pairs > 1)
+    for (size_t idx = 0; idx < num_pairs; ++idx) {
+        const auto& [gt_trajs, trk_trajs] = pairs[idx];
+        
+        size_t m = gt_trajs.size();
+        size_t n = trk_trajs.size();
+        
+        if (m == 0 && n == 0) {
+            // No contribution
+            continue;
+        }
+        if (m == 0 || n == 0) {
+            // Cardinality only
+            double card = std::pow(std::pow(c, p) * std::abs((int)m - (int)n) / (double)std::max(m, n), 1.0 / p);
+            total_ospa2 += card;
+            total_loc += 0.0;
+            total_card += card;
+            continue;
+        }
+        
+        // Compute distance matrix
+        Eigen::MatrixXd D = compute_distance_matrix_bind(gt_trajs, trk_trajs, c, q);
+        
+        // Compute OSPA2
+        auto [ospa2, loc, card] = ospa2_from_matrix_bind(D, c, p);
+        
+        total_ospa2 += ospa2;
+        total_loc += loc;
+        total_card += card;
+    }
+    
+    // Average over pairs
+    double avg_ospa2 = total_ospa2 / (double)num_pairs;
+    double avg_loc = total_loc / (double)num_pairs;
+    double avg_card = total_card / (double)num_pairs;
+    
+    return {avg_ospa2, avg_loc, avg_card};
+}
